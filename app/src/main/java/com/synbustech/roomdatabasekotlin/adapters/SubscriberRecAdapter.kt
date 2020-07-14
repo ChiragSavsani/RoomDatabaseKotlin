@@ -8,8 +8,9 @@ import com.synbustech.roomdatabasekotlin.R
 import com.synbustech.roomdatabasekotlin.databinding.ListItemBinding
 import com.synbustech.roomdatabasekotlin.db.Subscriber
 
-class SubscriberRecAdapter(private val subscribersList: List<Subscriber>) :
-    RecyclerView.Adapter<MyViewHolder>() {
+class SubscriberRecAdapter(private val clickListener: (Subscriber) -> Unit) : RecyclerView.Adapter<MyViewHolder>() {
+
+    private val subscribersList = ArrayList<Subscriber>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
@@ -24,15 +25,23 @@ class SubscriberRecAdapter(private val subscribersList: List<Subscriber>) :
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.bind(subscribersList[position])
+        holder.bind(subscribersList[position], clickListener)
+    }
+
+    fun setList(subscribers: List<Subscriber>) {
+        subscribersList.clear()
+        subscribersList.addAll(subscribers)
     }
 
 }
 
 class MyViewHolder(val binding: ListItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(subscriber: Subscriber) {
+    fun bind(subscriber: Subscriber, clickListener: (Subscriber) -> Unit) {
         binding.nameTextView.text = subscriber.name
         binding.emailTextView.text = subscriber.email
+        binding.cardView.setOnClickListener {
+            clickListener(subscriber)
+        }
     }
 }
